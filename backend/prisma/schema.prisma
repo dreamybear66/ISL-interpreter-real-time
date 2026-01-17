@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum HandDominance {
+  LEFT
+  RIGHT
+  BOTH
+}
+
+model Sign {
+  id            String         @id @default(cuid())
+  word          String         @unique
+  videoUrl      String         @map("video_url")
+  durationMs    Int?           @map("duration_ms")
+  dominantHand  HandDominance  @default(RIGHT) @map("dominant_hand")
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  @@map("signs")
+}
+
+model SupportedSentence {
+  id        String   @id @default(cuid())
+  gloss     String   @unique
+  words     String[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("supported_sentences")
+}

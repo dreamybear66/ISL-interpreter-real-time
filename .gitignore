@@ -1,0 +1,10 @@
+.kluster
+node_modules/
+.next/
+dist/
+build/
+.env
+backend/public/videos/
+backend/src/data/raw/
+*.mp4
+*.MOV
