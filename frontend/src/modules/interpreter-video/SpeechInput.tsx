@@ -105,100 +105,255 @@ const SpeechInput: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[400px] w-full max-w-4xl mx-auto p-6 space-y-8">
-            {/* Visual Feedback / State Indicator */}
-            <div className="text-center space-y-2">
-                <h1 className="text-4xl font-black text-isl-text-primary uppercase tracking-tight">ISL Interpreter</h1>
-                <p className="text-isl-text-secondary font-medium uppercase tracking-widest text-xs">Voice to Sign Sequence</p>
-            </div>
+        <div className="min-h-screen w-full bg-isl-bg dark:bg-slate-900 flex flex-col font-sans selection:bg-isl-primary/20 text-isl-text-primary dark:text-isl-text-light transition-colors duration-500">
 
-            {/* Playback Area */}
-            <div className="w-full min-h-[300px] flex items-center justify-center bg-white rounded-3xl shadow-2xl p-4 transition-all duration-500">
-                {status === 'PLAYING' && matchedWords ? (
-                    <VideoSequence
-                        words={matchedWords}
-                        videoUrls={videoUrls}
-                        onProgress={handlePlaybackProgress}
-                        onComplete={handlePlaybackComplete}
-                    />
-                ) : (
-                    <div className="text-center space-y-4">
-                        {status === 'LISTENING' ? (
-                            <div className="space-y-4">
-                                <div className="flex justify-center gap-1">
-                                    {[1, 2, 3].map(i => (
-                                        <div key={i} className={`w-3 h-3 bg-isl-primary rounded-full animate-bounce delay-${i * 100}`} />
+            {/* 1. Fixed Navigation Header */}
+            <header className="fixed top-0 left-0 right-0 h-20 bg-isl-primary dark:bg-slate-950 shadow-md z-50 flex items-center justify-between px-6 md:px-12 animate-in fade-in slide-in-from-top-4 duration-500">
+                {/* Left: Branding */}
+                <div className="flex flex-col items-start select-none cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.location.reload()}>
+                    <h1 className="text-2xl font-extrabold text-white tracking-tight leading-none">
+                        ISL INTERPRETER
+                    </h1>
+                    <p className="text-blue-200 dark:text-slate-400 font-bold uppercase tracking-[0.15em] text-[10px] mt-1">
+                        Voice to Sign Sequence
+                    </p>
+                </div>
+
+                {/* Right: Actions */}
+                <div className="flex items-center gap-6">
+                    {/* Home Tab */}
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="hidden md:flex items-center gap-2 text-sm font-bold text-blue-100 dark:text-slate-300 hover:text-white dark:hover:text-white uppercase tracking-wider transition-colors bg-white/10 px-4 py-2 rounded-full hover:bg-white/20"
+                    >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Home
+                    </button>
+                    {/* Dark Mode Toggle Removed as requested */}
+                </div>
+            </header>
+
+            {/* Main Content Wrapper - Added Top Padding for Fixed Header */}
+            <div className="flex-1 w-full pt-28 px-6 md:px-12 pb-12 overflow-y-auto">
+
+                {/* 1.5 Process Flow Indicator - Centered below header */}
+                <div className="w-full max-w-3xl mx-auto mb-12 flex items-center justify-between px-4">
+                    {/* Step 1 */}
+                    <div className={`group flex flex-col items-center gap-2 transition-all duration-300 ${status === 'LISTENING' ? 'scale-110 text-isl-primary dark:text-blue-400 font-bold' : 'text-gray-400 dark:text-slate-600 font-medium'}`}>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm border-2 shadow-sm transition-colors ${status === 'LISTENING' ? 'bg-isl-primary border-isl-primary text-white' : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700'}`}>
+                            {status === 'LISTENING' ? (
+                                <span className="animate-pulse">●</span>
+                            ) : 1}
+                        </div>
+                        <span className="text-[10px] md:text-xs tracking-[0.2em] uppercase">Listening</span>
+                    </div>
+
+                    {/* Connector 1 */}
+                    <div className="flex-1 h-0.5 mx-4 relative bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div className={`absolute inset-0 bg-isl-secondary transition-all duration-700 ${status === 'PROCESSING' || status === 'PLAYING' ? 'w-full' : 'w-0'}`} />
+                    </div>
+
+                    {/* Step 2 */}
+                    <div className={`flex flex-col items-center gap-2 transition-all duration-300 ${status === 'PROCESSING' ? 'scale-110 text-isl-primary dark:text-blue-400 font-bold' : 'text-gray-400 dark:text-slate-600 font-medium'}`}>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm border-2 shadow-sm transition-colors ${status === 'PROCESSING' ? 'bg-isl-primary border-isl-primary text-white' : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700'}`}>
+                            {status === 'PROCESSING' ? (
+                                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            ) : 2}
+                        </div>
+                        <span className="text-[10px] md:text-xs tracking-[0.2em] uppercase">Processing</span>
+                    </div>
+
+                    {/* Connector 2 */}
+                    <div className="flex-1 h-0.5 mx-4 relative bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div className={`absolute inset-0 bg-isl-secondary transition-all duration-700 ${status === 'PLAYING' ? 'w-full' : 'w-0'}`} />
+                    </div>
+
+                    {/* Step 3 */}
+                    <div className={`flex flex-col items-center gap-2 transition-all duration-300 ${status === 'PLAYING' ? 'scale-110 text-isl-primary dark:text-blue-400 font-bold' : 'text-gray-400 dark:text-slate-600 font-medium'}`}>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm border-2 shadow-sm transition-colors ${status === 'PLAYING' ? 'bg-isl-primary border-isl-primary text-white' : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700'}`}>
+                            {status === 'PLAYING' ? (
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                            ) : 3}
+                        </div>
+                        <span className="text-[10px] md:text-xs tracking-[0.2em] uppercase">Signing</span>
+                    </div>
+                </div>
+
+                {/* Main Grid Content */}
+                <main className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start max-w-[1600px]">
+
+                    {/* 2. Left Section: Controls & Transcripts */}
+                    <section className="flex flex-col gap-6 order-2 lg:order-1 justify-start w-full max-w-xl mx-auto lg:mx-0">
+
+                        {/* Primary Control: Tap to Speak */}
+                        <div className="w-full">
+                            <button
+                                disabled={status === 'PROCESSING'}
+                                onClick={toggleListening}
+                                className={`group relative flex items-center justify-center gap-3 w-full py-6 rounded-2xl text-xl font-bold shadow-lg shadow-blue-900/10 transition-all duration-300 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-1 hover:shadow-xl ${status === 'LISTENING'
+                                    ? 'bg-rose-500 text-white shadow-rose-500/30'
+                                    : 'bg-isl-primary text-white hover:bg-blue-700'
+                                    }`}
+                            >
+                                {status === 'LISTENING' ? (
+                                    <>
+                                        <div className="relative flex h-4 w-4">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-4 w-4 bg-white"></span>
+                                        </div>
+                                        <span className="tracking-widest text-sm uppercase">Listening...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="w-6 h-6 fill-current opacity-90 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24">
+                                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" /><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                                        </svg>
+                                        <span className="tracking-wider">TAP TO SPEAK</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+
+                        {/* Feedback Cards Stack */}
+                        <div className="flex flex-col gap-6">
+
+                            {/* Error Message */}
+                            {error && (
+                                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                                    <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                                    {error}
+                                </div>
+                            )}
+
+                            {/* Transcription Box (English) */}
+                            <div className="group p-6 bg-isl-card dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 min-h-[140px] flex flex-col transition-all duration-300 hover:shadow-md hover:border-blue-200 dark:hover:border-slate-600">
+                                <div className="flex items-center justify-between mb-3">
+                                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest select-none">You Said (English)</span>
+                                    <div className="h-1.5 w-1.5 rounded-full bg-slate-200 dark:bg-slate-700 group-hover:bg-isl-secondary transition-colors" />
+                                </div>
+                                <div className="flex-1 flex items-center">
+                                    <p className="text-xl md:text-2xl font-medium text-isl-text-primary dark:text-white capitalize leading-relaxed w-full text-left">
+                                        {transcription ? (
+                                            transcription
+                                        ) : (
+                                            <span className="text-slate-300 dark:text-slate-600 italic font-normal text-lg">mic is ready...</span>
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Gloss Box (ISL) */}
+                            <div className="group p-6 bg-gradient-to-br from-blue-50 to-white dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-sm border border-blue-100 dark:border-slate-700 min-h-[140px] flex flex-col transition-all duration-300 hover:shadow-md hover:border-blue-300 relative overflow-hidden">
+                                {/* Decorative Icon */}
+                                <div className="absolute -bottom-4 -right-4 text-isl-primary opacity-[0.03] dark:opacity-[0.05] transform rotate-12 group-hover:scale-110 transition-transform duration-500">
+                                    <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M9 11.75c-0.41 0-0.75-0.34-0.75-0.75V7c0-0.55 0.45-1 1-1s1 0.45 1 1v4c0 0.41-0.34 0.75-0.75 0.75zM12.75 11.75c-0.41 0-0.75-0.34-0.75-0.75V5.5c0-0.55 0.45-1 1-1s1 0.45 1 1v5.5c0 0.41-0.34 0.75-0.75 0.75zM16.5 11.75c-0.41 0-0.75-0.34-0.75-0.75V7c0-0.55 0.45-1 1-1s1 0.45 1 1v4c0 0.41-0.34 0.75-0.75 0.75zM21 2H2v20h19V2z m-2 18H5V4h14v16z" /></svg>
+                                </div>
+
+                                <div className="flex items-center justify-between mb-3 relative z-10">
+                                    <span className="text-[10px] font-bold text-isl-secondary dark:text-blue-400 uppercase tracking-widest select-none">
+                                        Interpreter Sees
+                                    </span>
+                                </div>
+
+                                <div className="flex-1 flex items-center relative z-10 w-full">
+                                    <p className="text-2xl md:text-3xl font-extrabold text-isl-primary dark:text-blue-300 leading-relaxed w-full break-normal text-left">
+                                        {matchedWords && currentWordIndex >= 0 ? (
+                                            <>
+                                                <span className="opacity-30 blur-[0.5px] grayscale transition-all duration-300">{matchedWords.slice(0, currentWordIndex).join(' ')}</span>
+                                                {' '}
+                                                <span className="inline-block text-isl-secondary dark:text-blue-400 border-b-4 border-isl-secondary/20 pb-0.5 scale-105 transition-all duration-200">{matchedWords[currentWordIndex]}</span>
+                                                {' '}
+                                                <span className="opacity-30 blur-[0.5px] grayscale transition-all duration-300">{matchedWords.slice(currentWordIndex + 1).join(' ')}</span>
+                                            </>
+                                        ) : (
+                                            gloss || <span className="text-isl-primary/20 dark:text-blue-400/20 italic font-normal text-lg">waiting for interpretation...</span>
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Quick Guide / Suggested Phrases */}
+                            <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center gap-2 mb-4 opacity-70">
+                                    <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Try Saying...</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {['Hello', 'I like computer', 'Where is the library', 'Nice to meet you'].map((phrase) => (
+                                        <button
+                                            key={phrase}
+                                            onClick={() => {/* Consider wiring this up later if requested */ }}
+                                            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm hover:border-isl-secondary/50 hover:text-isl-secondary dark:hover:text-blue-400 hover:shadow-md transition-all duration-200 active:scale-95"
+                                        >
+                                            {phrase}
+                                        </button>
                                     ))}
                                 </div>
-                                <p className="text-isl-primary font-bold animate-pulse text-lg">Listening carefully...</p>
                             </div>
-                        ) : status === 'PROCESSING' ? (
-                            <div className="space-y-4 text-center">
-                                <div className="w-12 h-12 border-4 border-isl-primary border-t-transparent rounded-full animate-spin mx-auto" />
-                                <p className="text-isl-text-secondary font-bold">Processing Gloss...</p>
-                            </div>
-                        ) : (
-                            <div className="p-8 border-4 border-dashed border-isl-card rounded-3xl">
-                                <p className="text-isl-text-secondary font-medium">Ready to interpret</p>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+                        </div>
+                    </section>
 
-            {/* Real-time Transcription Display */}
-            {(transcription || gloss) && (
-                <div className="w-full flex gap-4 animate-in fade-in slide-in-from-bottom-4">
-                    <div className="flex-1 p-4 bg-isl-card rounded-2xl border-b-4 border-isl-secondary/30">
-                        <span className="text-[10px] font-bold text-isl-text-secondary uppercase">You Said (English)</span>
-                        <p className="text-lg font-semibold text-isl-text-primary mt-1 capitalize">{transcription || '...'}</p>
-                    </div>
-                    <div className="flex-1 p-4 bg-isl-primary/10 rounded-2xl border-b-4 border-isl-primary/30">
-                        <span className="text-[10px] font-bold text-isl-primary uppercase">Interpreter Sees (ISL Gloss)</span>
-                        <p className="text-lg font-black text-isl-primary mt-1">
-                            {matchedWords && currentWordIndex >= 0
-                                ? matchedWords.slice(0, currentWordIndex + 1).join(' ')
-                                : gloss || '...'}
-                        </p>
-                    </div>
-                </div>
-            )}
+                    {/* 3. Right Section: Video Player */}
+                    <section className="order-1 lg:order-2 w-full h-full flex flex-col justify-start lg:pl-0">
+                        {/* Video Container */}
+                        <div className="w-full aspect-video lg:aspect-[4/3] xl:aspect-video h-auto max-h-[600px] bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 relative group transition-all duration-500">
 
-            {/* Error Message */}
-            {error && (
-                <div className="w-full p-4 bg-red-50 border-l-4 border-red-500 rounded-lg text-red-700 font-medium">
-                    {error}
-                </div>
-            )}
+                            {/* Inner Video Area */}
+                            {status === 'PLAYING' && matchedWords ? (
+                                <VideoSequence
+                                    words={matchedWords}
+                                    videoUrls={videoUrls}
+                                    onProgress={handlePlaybackProgress}
+                                    onComplete={handlePlaybackComplete}
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-colors duration-500">
+                                    {status === 'LISTENING' ? (
+                                        <div className="space-y-6 animate-in fade-in zoom-in duration-300 text-center">
+                                            <div className="relative mx-auto w-24 h-24">
+                                                <span className="absolute inset-0 rounded-full animate-ping bg-rose-500/20"></span>
+                                                <div className="relative w-24 h-24 bg-rose-50 dark:bg-rose-900/20 rounded-full flex items-center justify-center border border-rose-100 dark:border-rose-800">
+                                                    <div className="flex gap-1">
+                                                        {[1, 2, 3].map(i => (
+                                                            <div key={i} className="w-1.5 h-6 bg-rose-500 rounded-full animate-[bounce_1s_infinite]" style={{ animationDelay: `${i * 100}ms` }} />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p className="text-rose-500 font-bold tracking-wide">Listening to you...</p>
+                                        </div>
+                                    ) : status === 'PROCESSING' ? (
+                                        <div className="space-y-6 animate-in fade-in zoom-in duration-300 text-center">
+                                            <div className="w-20 h-20 border-4 border-isl-primary/20 border-t-isl-primary rounded-full animate-spin mx-auto" />
+                                            <p className="text-isl-primary dark:text-blue-400 font-bold tracking-wide">Translating...</p>
+                                        </div>
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col justify-center items-start pl-12 md:pl-20 text-left space-y-6 opacity-60 group-hover:opacity-100 transition-all duration-500">
+                                            <div className="w-24 h-24 bg-slate-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-600 shadow-inner">
+                                                <svg className="w-10 h-10 text-slate-300 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-slate-800 dark:text-white font-bold text-3xl mb-2 tracking-tight">Ready to Interpret</h3>
+                                                <p className="text-slate-500 dark:text-slate-400 font-medium text-lg max-w-[240px] leading-relaxed">
+                                                    Your sign language output will be shown here.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </section>
 
-            {/* Controls */}
-            <div className="flex flex-col items-center gap-4">
-                <button
-                    disabled={status === 'PROCESSING'}
-                    onClick={toggleListening}
-                    className={`group flex items-center gap-4 px-10 py-5 rounded-full text-xl font-black shadow-xl transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${status === 'LISTENING'
-                        ? 'bg-red-500 text-white hover:bg-red-600 scale-105 ring-8 ring-red-500/20'
-                        : 'bg-isl-primary text-white hover:bg-isl-primary/90 hover:shadow-2xl'
-                        }`}
-                >
-                    {status === 'LISTENING' ? (
-                        <>
-                            <div className="w-4 h-4 bg-white rounded-sm animate-pulse" />
-                            STOP LISTENING
-                        </>
-                    ) : (
-                        <>
-                            <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
-                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" /><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
-                            </svg>
-                            TAP TO SPEAK
-                        </>
-                    )}
-                </button>
-
+                </main>
             </div>
         </div>
     );
+
 };
 
 export default SpeechInput;

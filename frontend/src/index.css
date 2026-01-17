@@ -11,17 +11,36 @@
   --radius-xl: 0.75rem;
 }
 
-body {
-  background-color: var(--color-isl-bg);
-  color: var(--color-isl-text-primary);
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  font-family: system-ui, -apple-system, sans-serif;
+:root {
+  --app-bg: #F8FAFC;
+  /* Slate-50 (Light Mode) */
+  --app-text: #0F172A;
+  /* Slate-900 */
+  color-scheme: light;
 }
 
-:root {
-  color-scheme: light;
+:root.dark {
+  --app-bg: #0F172A;
+  /* Slate-900 (Dark Mode) */
+  --app-text: #FFFFFF;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  /* Smooth toggle transition */
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
