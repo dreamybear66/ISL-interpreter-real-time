@@ -181,11 +181,30 @@ const SpeechInput: React.FC = () => {
                     </div>
                 </div>
 
+
+
                 {/* Main Grid Content */}
                 <main className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start max-w-[1600px]">
 
                     {/* 2. Left Section: Controls & Transcripts */}
                     <section className="flex flex-col gap-6 order-2 lg:order-1 justify-start w-full max-w-xl mx-auto lg:mx-0">
+
+                        {/* Status Badge */}
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-slate-800">Voice Input</h2>
+                            <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-colors ${status === 'IDLE' ? 'bg-slate-100 text-slate-500' :
+                                status === 'LISTENING' ? 'bg-rose-100 text-rose-600' :
+                                    status === 'PROCESSING' ? 'bg-amber-100 text-amber-600' :
+                                        'bg-emerald-100 text-emerald-600'
+                                }`}>
+                                <span className={`w-2 h-2 rounded-full ${status === 'IDLE' ? 'bg-slate-400' :
+                                    status === 'LISTENING' ? 'bg-rose-500 animate-pulse' :
+                                        status === 'PROCESSING' ? 'bg-amber-500 animate-bounce' :
+                                            'bg-emerald-500'
+                                    }`} />
+                                {status}
+                            </div>
+                        </div>
 
                         {/* Primary Control: Tap to Speak */}
                         <div className="w-full">
@@ -274,20 +293,21 @@ const SpeechInput: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Quick Guide / Suggested Phrases */}
+                            {/* Supported Sentences Panel */}
                             <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
-                                <div className="flex items-center gap-2 mb-4 opacity-70">
-                                    <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Try Saying...</span>
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="bg-blue-100 text-blue-700 p-1 rounded"><svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg></span>
+                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Supported Sentences (Demo)</span>
                                 </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {['Hello', 'I like computer', 'Where is the library', 'Nice to meet you'].map((phrase) => (
-                                        <button
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {['Hello', 'I like computer', 'Where is the library', 'Nice to meet you', 'What is your name', 'Good morning'].map((phrase) => (
+                                        <div
                                             key={phrase}
-                                            onClick={() => {/* Consider wiring this up later if requested */ }}
-                                            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm hover:border-isl-secondary/50 hover:text-isl-secondary dark:hover:text-blue-400 hover:shadow-md transition-all duration-200 active:scale-95"
+                                            className="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 shadow-sm flex items-center justify-between group hover:border-isl-secondary/50 hover:shadow-md transition-all duration-200"
                                         >
-                                            {phrase}
-                                        </button>
+                                            <span>"{phrase}"</span>
+                                            <span className="text-[10px] text-slate-300 group-hover:text-isl-secondary transition-colors">Try</span>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
