@@ -191,16 +191,16 @@ const SpeechInput: React.FC = () => {
 
                         {/* Status Badge */}
                         <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-bold text-slate-800">Voice Input</h2>
-                            <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-colors ${status === 'IDLE' ? 'bg-slate-100 text-slate-500' :
-                                status === 'LISTENING' ? 'bg-rose-100 text-rose-600' :
-                                    status === 'PROCESSING' ? 'bg-amber-100 text-amber-600' :
-                                        'bg-emerald-100 text-emerald-600'
+                            <h2 className="text-xl font-bold text-white tracking-tight">Voice Input</h2>
+                            <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-colors ${status === 'IDLE' ? 'bg-white/10 text-slate-300 border border-white/10' :
+                                    status === 'LISTENING' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' :
+                                        status === 'PROCESSING' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
+                                            'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                                 }`}>
                                 <span className={`w-2 h-2 rounded-full ${status === 'IDLE' ? 'bg-slate-400' :
-                                    status === 'LISTENING' ? 'bg-rose-500 animate-pulse' :
-                                        status === 'PROCESSING' ? 'bg-amber-500 animate-bounce' :
-                                            'bg-emerald-500'
+                                        status === 'LISTENING' ? 'bg-rose-500 animate-pulse' :
+                                            status === 'PROCESSING' ? 'bg-amber-500 animate-bounce' :
+                                                'bg-emerald-500'
                                     }`} />
                                 {status}
                             </div>
@@ -247,47 +247,66 @@ const SpeechInput: React.FC = () => {
                             )}
 
                             {/* Transcription Box (English) */}
-                            <div className="group p-6 bg-isl-card dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 min-h-[140px] flex flex-col transition-all duration-300 hover:shadow-md hover:border-blue-200 dark:hover:border-slate-600">
-                                <div className="flex items-center justify-between mb-3">
-                                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest select-none">You Said (English)</span>
-                                    <div className="h-1.5 w-1.5 rounded-full bg-slate-200 dark:bg-slate-700 group-hover:bg-isl-secondary transition-colors" />
+                            <div className="group relative p-6 bg-white/90 backdrop-blur-xl rounded-2xl shadow-sm border border-slate-200 min-h-[140px] flex flex-col transition-all duration-500 hover:shadow-lg hover:border-blue-300 overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-50/30 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+                                <div className="flex items-center justify-between mb-3 relative z-10">
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest select-none font-sans">English Input</span>
+                                    <div className="flex gap-1">
+                                        <div className="h-1.5 w-1.5 rounded-full bg-slate-300 group-hover:bg-blue-400 transition-colors duration-300" />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-slate-300 group-hover:bg-blue-400 transition-colors duration-500 delay-75" />
+                                    </div>
                                 </div>
-                                <div className="flex-1 flex items-center">
-                                    <p className="text-xl md:text-2xl font-medium text-isl-text-primary dark:text-white capitalize leading-relaxed w-full text-left">
+                                <div className="flex-1 flex items-center relative z-10">
+                                    <p className="text-xl md:text-2xl font-medium text-slate-800 capitalize leading-relaxed w-full text-left font-sans tracking-tight">
                                         {transcription ? (
-                                            transcription
+                                            <span className="animate-in fade-in slide-in-from-left-2 duration-500">{transcription}</span>
                                         ) : (
-                                            <span className="text-slate-300 dark:text-slate-600 italic font-normal text-lg">mic is ready...</span>
+                                            <span className="text-slate-400 font-normal text-lg flex items-center gap-2">
+                                                Tap microphone to speak...
+                                            </span>
                                         )}
                                     </p>
                                 </div>
                             </div>
 
                             {/* Gloss Box (ISL) */}
-                            <div className="group p-6 bg-gradient-to-br from-blue-50 to-white dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-sm border border-blue-100 dark:border-slate-700 min-h-[140px] flex flex-col transition-all duration-300 hover:shadow-md hover:border-blue-300 relative overflow-hidden">
+                            <div className="group relative p-6 bg-gradient-to-br from-blue-50/80 to-white/90 backdrop-blur-xl rounded-2xl shadow-md border border-blue-100 min-h-[140px] flex flex-col transition-all duration-500 hover:shadow-blue-200/50 hover:border-blue-300 relative overflow-hidden ring-1 ring-transparent hover:ring-blue-100">
+                                {/* Decorative Grid Background */}
+                                <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
                                 {/* Decorative Icon */}
-                                <div className="absolute -bottom-4 -right-4 text-isl-primary opacity-[0.03] dark:opacity-[0.05] transform rotate-12 group-hover:scale-110 transition-transform duration-500">
-                                    <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M9 11.75c-0.41 0-0.75-0.34-0.75-0.75V7c0-0.55 0.45-1 1-1s1 0.45 1 1v4c0 0.41-0.34 0.75-0.75 0.75zM12.75 11.75c-0.41 0-0.75-0.34-0.75-0.75V5.5c0-0.55 0.45-1 1-1s1 0.45 1 1v5.5c0 0.41-0.34 0.75-0.75 0.75zM16.5 11.75c-0.41 0-0.75-0.34-0.75-0.75V7c0-0.55 0.45-1 1-1s1 0.45 1 1v4c0 0.41-0.34 0.75-0.75 0.75zM21 2H2v20h19V2z m-2 18H5V4h14v16z" /></svg>
+                                <div className="absolute -bottom-6 -right-6 text-blue-100 opacity-20 transform rotate-12 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
+                                    <svg className="w-40 h-40" fill="currentColor" viewBox="0 0 24 24"><path d="M9 11.75c-0.41 0-0.75-0.34-0.75-0.75V7c0-0.55 0.45-1 1-1s1 0.45 1 1v4c0 0.41-0.34 0.75-0.75 0.75zM12.75 11.75c-0.41 0-0.75-0.34-0.75-0.75V5.5c0-0.55 0.45-1 1-1s1 0.45 1 1v5.5c0 0.41-0.34 0.75-0.75 0.75zM16.5 11.75c-0.41 0-0.75-0.34-0.75-0.75V7c0-0.55 0.45-1 1-1s1 0.45 1 1v4c0 0.41-0.34 0.75-0.75 0.75zM21 2H2v20h19V2z m-2 18H5V4h14v16z" /></svg>
                                 </div>
 
                                 <div className="flex items-center justify-between mb-3 relative z-10">
-                                    <span className="text-[10px] font-bold text-isl-secondary dark:text-blue-400 uppercase tracking-widest select-none">
-                                        Interpreter Sees
+                                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest select-none flex items-center gap-2 font-sans">
+                                        <span className="w-2 h-2 rounded-full bg-blue-500 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] opacity-75"></span>
+                                        Interpreter Output (ISL)
                                     </span>
                                 </div>
 
-                                <div className="flex-1 flex items-center relative z-10 w-full">
-                                    <p className="text-2xl md:text-3xl font-extrabold text-isl-primary dark:text-blue-300 leading-relaxed w-full break-normal text-left">
+                                <div className="flex-1 flex items-center relative z-10 w-full pl-1">
+                                    <p className="text-xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-blue-500 leading-relaxed w-full break-normal text-left font-mono tracking-tight">
                                         {matchedWords && currentWordIndex >= 0 ? (
                                             <>
-                                                <span className="opacity-30 blur-[0.5px] grayscale transition-all duration-300">{matchedWords.slice(0, currentWordIndex).join(' ')}</span>
+                                                <span className="opacity-30 blur-[1px] grayscale transition-all duration-300">{matchedWords.slice(0, currentWordIndex).join(' ')}</span>
                                                 {' '}
-                                                <span className="inline-block text-isl-secondary dark:text-blue-400 border-b-4 border-isl-secondary/20 pb-0.5 scale-105 transition-all duration-200">{matchedWords[currentWordIndex]}</span>
+                                                <span className="inline-block relative">
+                                                    <span className="absolute -inset-1 bg-blue-100 blur-sm rounded-lg opacity-50 animate-pulse"></span>
+                                                    <span className="relative z-10 text-blue-600 border-b-2 border-blue-400 pb-0.5 scale-110 transition-all duration-200 inline-block">{matchedWords[currentWordIndex]}</span>
+                                                </span>
                                                 {' '}
-                                                <span className="opacity-30 blur-[0.5px] grayscale transition-all duration-300">{matchedWords.slice(currentWordIndex + 1).join(' ')}</span>
+                                                <span className="opacity-30 blur-[1px] grayscale transition-all duration-300">{matchedWords.slice(currentWordIndex + 1).join(' ')}</span>
                                             </>
                                         ) : (
-                                            gloss || <span className="text-isl-primary/20 dark:text-blue-400/20 italic font-normal text-lg">waiting for interpretation...</span>
+                                            gloss ? (
+                                                <span className="animate-in fade-in slide-in-from-bottom-2 duration-700">{gloss}</span>
+                                            ) : (
+                                                <span className="text-blue-400/60 font-medium text-lg font-sans">
+                                                    Translation will appear here...
+                                                </span>
+                                            )
                                         )}
                                     </p>
                                 </div>
